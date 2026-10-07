@@ -1,0 +1,717 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Library Book Search System</title>
+
+    <style>
+
+        /* =========================
+           BASIC SETTINGS
+        ========================= */
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #141e30, #243b55);
+            padding: 30px;
+            color: #222;
+        }
+
+        /* =========================
+           MAIN CONTAINER
+        ========================= */
+
+        .container {
+            max-width: 1100px;
+            margin: auto;
+            background: #ffffff;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 15px 45px rgba(0, 0, 0, 0.35);
+        }
+
+        /* =========================
+           HEADER
+        ========================= */
+
+        .header {
+            background: linear-gradient(135deg, #1e3c72, #2a5298);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 32px;
+            margin-bottom: 8px;
+        }
+
+        .header p {
+            font-size: 15px;
+            opacity: 0.9;
+        }
+
+        /* =========================
+           SEARCH SECTION
+        ========================= */
+
+        .search-section {
+            padding: 30px;
+            background: #f5f7fa;
+        }
+
+        .search-section h2 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #1e3c72;
+        }
+
+        .search-box {
+            display: flex;
+            gap: 10px;
+            max-width: 750px;
+            margin: auto;
+        }
+
+        .search-box input {
+            flex: 1;
+            padding: 14px;
+            border: 2px solid #d5d8dc;
+            border-radius: 10px;
+            font-size: 16px;
+            outline: none;
+        }
+
+        .search-box input:focus {
+            border-color: #2a5298;
+        }
+
+        .search-btn {
+            padding: 14px 25px;
+            border: none;
+            border-radius: 10px;
+            background: #1e3c72;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .search-btn:hover {
+            background: #16315f;
+        }
+
+        .clear-btn {
+            padding: 14px 20px;
+            border: none;
+            border-radius: 10px;
+            background: #7f8c8d;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .clear-btn:hover {
+            background: #626567;
+        }
+
+        /* =========================
+           BOOK SECTION
+        ========================= */
+
+        .books-section {
+            padding: 30px;
+        }
+
+        .books-section h2 {
+            color: #1e3c72;
+            margin-bottom: 20px;
+        }
+
+        .book-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+
+        /* =========================
+           BOOK CARD
+        ========================= */
+
+        .book-card {
+            border: 1px solid #e1e5e8;
+            border-radius: 15px;
+            padding: 20px;
+            background: white;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            transition: 0.3s;
+        }
+
+        .book-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+        }
+
+        .book-icon {
+            width: 60px;
+            height: 60px;
+            background: #eaf2ff;
+            border-radius: 12px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 30px;
+            margin-bottom: 15px;
+        }
+
+        .book-card h3 {
+            color: #1e3c72;
+            margin-bottom: 10px;
+            font-size: 19px;
+        }
+
+        .book-card p {
+            margin: 7px 0;
+            color: #555;
+            font-size: 14px;
+        }
+
+        .available {
+            display: inline-block;
+            background: #d5f5e3;
+            color: #196f3d;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: bold;
+            margin-top: 8px;
+        }
+
+        .not-available {
+            display: inline-block;
+            background: #fadbd8;
+            color: #922b21;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: bold;
+            margin-top: 8px;
+        }
+
+        .issue-btn {
+            width: 100%;
+            margin-top: 15px;
+            padding: 10px;
+            border: none;
+            border-radius: 8px;
+            background: #27ae60;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .issue-btn:hover {
+            background: #1e8449;
+        }
+
+        .disabled-btn {
+            width: 100%;
+            margin-top: 15px;
+            padding: 10px;
+            border: none;
+            border-radius: 8px;
+            background: #bdc3c7;
+            color: #555;
+            font-weight: bold;
+            cursor: not-allowed;
+        }
+
+        /* =========================
+           MESSAGE
+        ========================= */
+
+        .message {
+            text-align: center;
+            padding: 12px;
+            margin: 20px 30px 0;
+            border-radius: 8px;
+            display: none;
+            font-weight: bold;
+        }
+
+        .success {
+            background: #d5f5e3;
+            color: #196f3d;
+        }
+
+        .error {
+            background: #fadbd8;
+            color: #922b21;
+        }
+
+        /* =========================
+           FOOTER
+        ========================= */
+
+        .footer {
+            text-align: center;
+            background: #17202a;
+            color: #bdc3c7;
+            padding: 20px;
+            font-size: 13px;
+        }
+
+        /* =========================
+           NO RESULT
+        ========================= */
+
+        .no-result {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 40px;
+            color: #7f8c8d;
+            font-size: 18px;
+        }
+
+        /* =========================
+           RESPONSIVE DESIGN
+        ========================= */
+
+        @media (max-width: 850px) {
+
+            .book-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 600px) {
+
+            body {
+                padding: 10px;
+            }
+
+            .book-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .search-box {
+                flex-direction: column;
+            }
+
+            .search-btn,
+            .clear-btn {
+                width: 100%;
+            }
+
+            .header h1 {
+                font-size: 25px;
+            }
+        }
+
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+
+        <!-- HEADER -->
+
+        <div class="header">
+
+            <h1>📚 Library Book Search System</h1>
+
+            <p>
+                Search, view and manage library books easily
+            </p>
+
+        </div>
+
+
+        <!-- SEARCH -->
+
+        <div class="search-section">
+
+            <h2>🔍 Search Books</h2>
+
+            <div class="search-box">
+
+                <input
+                    type="text"
+                    id="searchInput"
+                    placeholder="Enter book title or author..."
+                    onkeyup="searchBooks()"
+                >
+
+                <button
+                    class="search-btn"
+                    onclick="searchBooks()">
+                    Search
+                </button>
+
+                <button
+                    class="clear-btn"
+                    onclick="clearSearch()">
+                    Clear
+                </button>
+
+            </div>
+
+        </div>
+
+
+        <!-- MESSAGE -->
+
+        <div
+            id="message"
+            class="message">
+        </div>
+
+
+        <!-- BOOKS -->
+
+        <div class="books-section">
+
+            <h2>📖 Available Books</h2>
+
+            <div
+                class="book-grid"
+                id="bookList">
+
+            </div>
+
+        </div>
+
+
+        <!-- FOOTER -->
+
+        <div class="footer">
+
+            © 2026 Library Book Search System |
+            Mini Project
+
+        </div>
+
+    </div>
+
+
+    <script>
+
+        /* =========================
+           BOOK DATA
+        ========================= */
+
+        const books = [
+
+            {
+                title: "Python Programming",
+                author: "Mark Lutz",
+                category: "Programming",
+                status: "Available"
+            },
+
+            {
+                title: "Java Complete Reference",
+                author: "Herbert Schildt",
+                category: "Programming",
+                status: "Available"
+            },
+
+            {
+                title: "Software Engineering",
+                author: "Ian Sommerville",
+                category: "Engineering",
+                status: "Available"
+            },
+
+            {
+                title: "Database Management System",
+                author: "Raghu Ramakrishnan",
+                category: "Database",
+                status: "Issued"
+            },
+
+            {
+                title: "Web Technologies",
+                author: "Uttam K. Roy",
+                category: "Web Development",
+                status: "Available"
+            },
+
+            {
+                title: "Computer Networks",
+                author: "Andrew S. Tanenbaum",
+                category: "Networking",
+                status: "Issued"
+            },
+
+            {
+                title: "Data Structures",
+                author: "Seymour Lipschutz",
+                category: "Programming",
+                status: "Available"
+            },
+
+            {
+                title: "Operating System Concepts",
+                author: "Abraham Silberschatz",
+                category: "Operating System",
+                status: "Available"
+            },
+
+            {
+                title: "Artificial Intelligence",
+                author: "Stuart Russell",
+                category: "AI",
+                status: "Issued"
+            }
+
+        ];
+
+
+        /* =========================
+           DISPLAY BOOKS
+        ========================= */
+
+        function displayBooks(bookArray) {
+
+            const bookList =
+                document.getElementById("bookList");
+
+            bookList.innerHTML = "";
+
+
+            if (bookArray.length === 0) {
+
+                bookList.innerHTML = `
+                    <div class="no-result">
+                        ❌ No books found
+                    </div>
+                `;
+
+                return;
+            }
+
+
+            bookArray.forEach(function(book, index) {
+
+                let statusHTML;
+
+                let buttonHTML;
+
+
+                if (book.status === "Available") {
+
+                    statusHTML = `
+                        <span class="available">
+                            ✓ Available
+                        </span>
+                    `;
+
+                    buttonHTML = `
+                        <button
+                            class="issue-btn"
+                            onclick="issueBook(${index})">
+                            Issue Book
+                        </button>
+                    `;
+
+                } else {
+
+                    statusHTML = `
+                        <span class="not-available">
+                            ✕ Issued
+                        </span>
+                    `;
+
+                    buttonHTML = `
+                        <button
+                            class="disabled-btn"
+                            disabled>
+                            Not Available
+                        </button>
+                    `;
+                }
+
+
+                bookList.innerHTML += `
+
+                    <div class="book-card">
+
+                        <div class="book-icon">
+                            📖
+                        </div>
+
+                        <h3>
+                            ${book.title}
+                        </h3>
+
+                        <p>
+                            <strong>Author:</strong>
+                            ${book.author}
+                        </p>
+
+                        <p>
+                            <strong>Category:</strong>
+                            ${book.category}
+                        </p>
+
+                        ${statusHTML}
+
+                        ${buttonHTML}
+
+                    </div>
+
+                `;
+
+            });
+
+        }
+
+
+        /* =========================
+           SEARCH FUNCTION
+        ========================= */
+
+        function searchBooks() {
+
+            const searchValue =
+                document
+                .getElementById("searchInput")
+                .value
+                .toLowerCase()
+                .trim();
+
+
+            const filteredBooks =
+                books.filter(function(book) {
+
+                    return (
+                        book.title
+                            .toLowerCase()
+                            .includes(searchValue)
+                        ||
+                        book.author
+                            .toLowerCase()
+                            .includes(searchValue)
+                    );
+
+                });
+
+
+            displayBooks(filteredBooks);
+
+
+            if (searchValue !== "") {
+
+                if (filteredBooks.length > 0) {
+
+                    showMessage(
+                        filteredBooks.length +
+                        " book(s) found",
+                        "success"
+                    );
+
+                } else {
+
+                    showMessage(
+                        "No books found",
+                        "error"
+                    );
+                }
+
+            } else {
+
+                hideMessage();
+            }
+
+        }
+
+
+        /* =========================
+           CLEAR SEARCH
+        ========================= */
+
+        function clearSearch() {
+
+            document
+                .getElementById("searchInput")
+                .value = "";
+
+            displayBooks(books);
+
+            hideMessage();
+
+        }
+
+
+        /* =========================
+           ISSUE BOOK
+        ========================= */
+
+        function issueBook(index) {
+
+            if (books[index].status === "Available") {
+
+                books[index].status = "Issued";
+
+                showMessage(
+                    books[index].title +
+                    " has been issued successfully!",
+                    "success"
+                );
+
+                displayBooks(books);
+
+            }
+
+        }
+
+
+        /* =========================
+           MESSAGE FUNCTION
+        ========================= */
+
+        function showMessage(text, type) {
+
+            const message =
+                document.getElementById("message");
+
+            message.innerText = text;
+
+            message.className =
+                "message " + type;
+
+            message.style.display = "block";
+
+        }
+
+
+        function hideMessage() {
+
+            document
+                .getElementById("message")
+                .style.display = "none";
+
+        }
+
+
+        /* =========================
+           INITIAL DISPLAY
+        ========================= */
+
+        displayBooks(books);
+
+    </script>
+
+</body>
+</html>
