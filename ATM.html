@@ -1,0 +1,750 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>ATM Simulator Testing System</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+        }
+
+        .atm-container {
+            width: 420px;
+            min-height: 600px;
+            background: #f4f7f9;
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.4);
+        }
+
+        .atm-header {
+            text-align: center;
+            background: #17202a;
+            color: white;
+            padding: 18px;
+            border-radius: 15px;
+            margin-bottom: 25px;
+        }
+
+        .atm-header h1 {
+            font-size: 25px;
+            letter-spacing: 1px;
+        }
+
+        .atm-header p {
+            font-size: 13px;
+            margin-top: 5px;
+            color: #bfc9ca;
+        }
+
+        .screen {
+            display: none;
+        }
+
+        .screen.active {
+            display: block;
+        }
+
+        .screen h2 {
+            text-align: center;
+            color: #17202a;
+            margin-bottom: 20px;
+        }
+
+        .input-group {
+            margin-bottom: 18px;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 7px;
+            font-weight: bold;
+            color: #34495e;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 13px;
+            border: 1px solid #ccd1d1;
+            border-radius: 8px;
+            font-size: 16px;
+            outline: none;
+        }
+
+        .input-group input:focus {
+            border-color: #3498db;
+        }
+
+        button {
+            width: 100%;
+            padding: 13px;
+            border: none;
+            border-radius: 8px;
+            margin-top: 8px;
+            font-size: 15px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .primary-btn {
+            background: #2980b9;
+            color: white;
+        }
+
+        .primary-btn:hover {
+            background: #1f618d;
+        }
+
+        .success-btn {
+            background: #27ae60;
+            color: white;
+        }
+
+        .success-btn:hover {
+            background: #1e8449;
+        }
+
+        .danger-btn {
+            background: #c0392b;
+            color: white;
+        }
+
+        .danger-btn:hover {
+            background: #922b21;
+        }
+
+        .secondary-btn {
+            background: #7f8c8d;
+            color: white;
+        }
+
+        .secondary-btn:hover {
+            background: #616a6b;
+        }
+
+        .menu-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        .menu-grid button {
+            min-height: 65px;
+        }
+
+        .balance-box {
+            background: #17202a;
+            color: white;
+            text-align: center;
+            padding: 25px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+        }
+
+        .balance-box p {
+            color: #bdc3c7;
+            margin-bottom: 8px;
+        }
+
+        .balance-box h3 {
+            font-size: 30px;
+            color: #2ecc71;
+        }
+
+        .message {
+            text-align: center;
+            padding: 12px;
+            margin-top: 15px;
+            border-radius: 8px;
+            display: none;
+            font-weight: bold;
+        }
+
+        .success-message {
+            background: #d5f5e3;
+            color: #196f3d;
+        }
+
+        .error-message {
+            background: #fadbd8;
+            color: #922b21;
+        }
+
+        .statement {
+            background: white;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 20px;
+            border: 1px solid #ddd;
+        }
+
+        .statement p {
+            padding: 8px 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .statement p:last-child {
+            border-bottom: none;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 20px;
+            color: #7f8c8d;
+            font-size: 12px;
+        }
+
+        @media (max-width: 500px) {
+            .atm-container {
+                width: 92%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="atm-container">
+
+    <!-- HEADER -->
+    <div class="atm-header">
+        <h1>ATM MACHINE</h1>
+        <p>ATM Simulator Testing System</p>
+    </div>
+
+
+    <!-- LOGIN SCREEN -->
+    <div id="loginScreen" class="screen active">
+
+        <h2>Secure Login</h2>
+
+        <div class="input-group">
+            <label>Enter PIN</label>
+            <input type="password" id="pin" maxlength="4"
+                   placeholder="Enter 4-digit PIN">
+        </div>
+
+        <button class="primary-btn" onclick="login()">
+            LOGIN
+        </button>
+
+        <div id="loginMessage" class="message"></div>
+
+        <div class="footer">
+            Demo PIN: 1234
+        </div>
+
+    </div>
+
+
+    <!-- ATM MENU -->
+    <div id="menuScreen" class="screen">
+
+        <h2>ATM Main Menu</h2>
+
+        <div class="balance-box">
+            <p>Available Balance</p>
+            <h3 id="menuBalance">₹10,000</h3>
+        </div>
+
+        <div class="menu-grid">
+
+            <button class="primary-btn" onclick="showBalance()">
+                💰 Check Balance
+            </button>
+
+            <button class="success-btn" onclick="showWithdraw()">
+                💸 Withdraw
+            </button>
+
+            <button class="success-btn" onclick="showDeposit()">
+                💵 Deposit
+            </button>
+
+            <button class="primary-btn" onclick="showStatement()">
+                📄 Mini Statement
+            </button>
+
+        </div>
+
+        <button class="danger-btn" onclick="logout()">
+            🚪 Logout
+        </button>
+
+    </div>
+
+
+    <!-- BALANCE SCREEN -->
+    <div id="balanceScreen" class="screen">
+
+        <h2>Account Balance</h2>
+
+        <div class="balance-box">
+            <p>Your Current Balance</p>
+            <h3 id="balanceAmount">₹10,000</h3>
+        </div>
+
+        <button class="secondary-btn" onclick="showMenu()">
+            Back to Menu
+        </button>
+
+    </div>
+
+
+    <!-- WITHDRAW SCREEN -->
+    <div id="withdrawScreen" class="screen">
+
+        <h2>Withdraw Money</h2>
+
+        <div class="input-group">
+            <label>Enter Amount</label>
+            <input type="number" id="withdrawAmount"
+                   placeholder="Enter amount">
+        </div>
+
+        <button class="success-btn" onclick="withdraw()">
+            Withdraw
+        </button>
+
+        <button class="secondary-btn" onclick="showMenu()">
+            Back to Menu
+        </button>
+
+        <div id="withdrawMessage" class="message"></div>
+
+    </div>
+
+
+    <!-- DEPOSIT SCREEN -->
+    <div id="depositScreen" class="screen">
+
+        <h2>Deposit Money</h2>
+
+        <div class="input-group">
+            <label>Enter Amount</label>
+            <input type="number" id="depositAmount"
+                   placeholder="Enter amount">
+        </div>
+
+        <button class="success-btn" onclick="deposit()">
+            Deposit
+        </button>
+
+        <button class="secondary-btn" onclick="showMenu()">
+            Back to Menu
+        </button>
+
+        <div id="depositMessage" class="message"></div>
+
+    </div>
+
+
+    <!-- MINI STATEMENT -->
+    <div id="statementScreen" class="screen">
+
+        <h2>Mini Statement</h2>
+
+        <div class="statement" id="statement">
+            <p>No transactions yet.</p>
+        </div>
+
+        <div class="balance-box">
+            <p>Current Balance</p>
+            <h3 id="statementBalance">₹10,000</h3>
+        </div>
+
+        <button class="secondary-btn" onclick="showMenu()">
+            Back to Menu
+        </button>
+
+    </div>
+
+
+    <!-- LOGOUT SCREEN -->
+    <div id="logoutScreen" class="screen">
+
+        <h2>Thank You!</h2>
+
+        <div class="balance-box">
+            <p>Transaction Completed</p>
+            <h3>Goodbye!</h3>
+        </div>
+
+        <button class="primary-btn" onclick="goToLogin()">
+            Login Again
+        </button>
+
+    </div>
+
+</div>
+
+
+<script>
+
+    // -----------------------------
+    // ATM DATA
+    // -----------------------------
+
+    let balance = 10000;
+
+    let transactions = [];
+
+    const correctPIN = "1234";
+
+
+    // -----------------------------
+    // SCREEN FUNCTION
+    // -----------------------------
+
+    function hideAllScreens() {
+
+        let screens = document.querySelectorAll(".screen");
+
+        screens.forEach(function(screen) {
+            screen.classList.remove("active");
+        });
+    }
+
+
+    function showScreen(id) {
+
+        hideAllScreens();
+
+        document.getElementById(id).classList.add("active");
+    }
+
+
+    // -----------------------------
+    // LOGIN
+    // -----------------------------
+
+    function login() {
+
+        let pin = document.getElementById("pin").value;
+
+        let message = document.getElementById("loginMessage");
+
+
+        if (pin === "") {
+
+            showMessage(
+                message,
+                "Please enter your PIN",
+                "error"
+            );
+
+            return;
+        }
+
+
+        if (pin.length !== 4) {
+
+            showMessage(
+                message,
+                "PIN must contain 4 digits",
+                "error"
+            );
+
+            return;
+        }
+
+
+        if (pin === correctPIN) {
+
+            showScreen("menuScreen");
+
+            updateBalance();
+
+        } else {
+
+            showMessage(
+                message,
+                "Invalid PIN. Please try again.",
+                "error"
+            );
+        }
+    }
+
+
+    // -----------------------------
+    // BALANCE
+    // -----------------------------
+
+    function showBalance() {
+
+        document.getElementById("balanceAmount").innerText =
+            "₹" + balance.toLocaleString("en-IN");
+
+        showScreen("balanceScreen");
+    }
+
+
+    // -----------------------------
+    // WITHDRAW
+    // -----------------------------
+
+    function showWithdraw() {
+
+        document.getElementById("withdrawAmount").value = "";
+
+        document.getElementById("withdrawMessage").style.display = "none";
+
+        showScreen("withdrawScreen");
+    }
+
+
+    function withdraw() {
+
+        let amount =
+            Number(document.getElementById("withdrawAmount").value);
+
+        let message =
+            document.getElementById("withdrawMessage");
+
+
+        if (amount === 0 || isNaN(amount)) {
+
+            showMessage(
+                message,
+                "Please enter a valid amount",
+                "error"
+            );
+
+            return;
+        }
+
+
+        if (amount < 0) {
+
+            showMessage(
+                message,
+                "Amount cannot be negative",
+                "error"
+            );
+
+            return;
+        }
+
+
+        if (amount > balance) {
+
+            showMessage(
+                message,
+                "Insufficient balance",
+                "error"
+            );
+
+            return;
+        }
+
+
+        balance = balance - amount;
+
+
+        transactions.push(
+            "Withdraw: ₹" +
+            amount.toLocaleString("en-IN")
+        );
+
+
+        showMessage(
+            message,
+            "Withdrawal successful!",
+            "success"
+        );
+
+
+        updateBalance();
+    }
+
+
+    // -----------------------------
+    // DEPOSIT
+    // -----------------------------
+
+    function showDeposit() {
+
+        document.getElementById("depositAmount").value = "";
+
+        document.getElementById("depositMessage").style.display = "none";
+
+        showScreen("depositScreen");
+    }
+
+
+    function deposit() {
+
+        let amount =
+            Number(document.getElementById("depositAmount").value);
+
+        let message =
+            document.getElementById("depositMessage");
+
+
+        if (amount === 0 || isNaN(amount)) {
+
+            showMessage(
+                message,
+                "Please enter a valid amount",
+                "error"
+            );
+
+            return;
+        }
+
+
+        if (amount < 0) {
+
+            showMessage(
+                message,
+                "Amount cannot be negative",
+                "error"
+            );
+
+            return;
+        }
+
+
+        balance = balance + amount;
+
+
+        transactions.push(
+            "Deposit: ₹" +
+            amount.toLocaleString("en-IN")
+        );
+
+
+        showMessage(
+            message,
+            "Deposit successful!",
+            "success"
+        );
+
+
+        updateBalance();
+    }
+
+
+    // -----------------------------
+    // MINI STATEMENT
+    // -----------------------------
+
+    function showStatement() {
+
+        let statement =
+            document.getElementById("statement");
+
+        statement.innerHTML = "";
+
+
+        if (transactions.length === 0) {
+
+            statement.innerHTML =
+                "<p>No transactions yet.</p>";
+
+        } else {
+
+            transactions.forEach(function(transaction) {
+
+                let p = document.createElement("p");
+
+                p.innerText = transaction;
+
+                statement.appendChild(p);
+
+            });
+        }
+
+
+        document.getElementById("statementBalance").innerText =
+            "₹" + balance.toLocaleString("en-IN");
+
+
+        showScreen("statementScreen");
+    }
+
+
+    // -----------------------------
+    // UPDATE BALANCE
+    // -----------------------------
+
+    function updateBalance() {
+
+        document.getElementById("menuBalance").innerText =
+            "₹" + balance.toLocaleString("en-IN");
+
+    }
+
+
+    // -----------------------------
+    // MENU
+    // -----------------------------
+
+    function showMenu() {
+
+        updateBalance();
+
+        showScreen("menuScreen");
+    }
+
+
+    // -----------------------------
+    // LOGOUT
+    // -----------------------------
+
+    function logout() {
+
+        showScreen("logoutScreen");
+    }
+
+
+    function goToLogin() {
+
+        document.getElementById("pin").value = "";
+
+        showScreen("loginScreen");
+    }
+
+
+    // -----------------------------
+    // MESSAGE FUNCTION
+    // -----------------------------
+
+    function showMessage(element, text, type) {
+
+        element.innerText = text;
+
+        element.style.display = "block";
+
+
+        if (type === "success") {
+
+            element.className =
+                "message success-message";
+
+        } else {
+
+            element.className =
+                "message error-message";
+        }
+    }
+
+</script>
+
+</body>
+</html>
