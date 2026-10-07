@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="ta">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Online Feedback Form</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #0d1117; /* நவீன டார்க் பேக்ரவுண்ட் */
+            color: #c9d1d9;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .form-container {
+            background-color: #161b22; /* ஃபார்ம் பாக்ஸ் கலர் */
+            border: 1px solid #30363d;
+            border-radius: 12px;
+            padding: 35px 30px;
+            width: 100%;
+            max-width: 450px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+        }
+
+        h1 {
+            color: #58a6ff; /* அழகான நீல நிற ஹெடிங் */
+            font-size: 24px;
+            margin-bottom: 25px;
+            text-align: center;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #8b949e;
+            font-size: 14px;
+        }
+
+        input[type="text"],
+        input[type="email"],
+        input[type="tel"],
+        textarea {
+            width: 100%;
+            padding: 12px;
+            background-color: #0d1117;
+            border: 1px solid #30363d;
+            border-radius: 6px;
+            color: #f0f6fc;
+            font-size: 14px;
+            outline: none;
+            transition: border-color 0.2s ease-in-out;
+        }
+
+        input[type="text"]:focus,
+        input[type="email"]:focus,
+        input[type="tel"]:focus,
+        textarea:focus {
+            border-color: #58a6ff;
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            background-color: #238636; /* சப்மிட் பட்டன் பச்சை நிறம் */
+            color: #ffffff;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.2s ease-in-out;
+        }
+
+        button:hover {
+            background-color: #2ea043;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="form-container">
+        <h1>Online Feedback Form</h1>
+        
+        <form id="feedbackForm" onsubmit="event.preventDefault(); submitFeedback();">
+            <!-- Name Field -->
+            <div class="form-group">
+                <label for="name">Name:</label>
+                <input type="text" id="name" placeholder="உங்கள் பெயரை உள்ளிடவும்" required>
+            </div>
+
+            <!-- Email Field -->
+            <div class="form-group">
+                <label for="email">Email:</label>
+                <input type="email" id="email" placeholder="உங்கள் மின்னஞ்சலை உள்ளிடவும்" required>
+            </div>
+
+            <!-- Phone Number Field (Rating-க்கு பதிலாக) -->
+            <div class="form-group">
+                <label for="phone">Phone Number:</label>
+                <input type="tel" id="phone" placeholder="உங்கள் தொலைபேசி எண்ணை உள்ளிடவும்">
+            </div>
+
+            <!-- Feedback Text Area -->
+            <div class="form-group">
+                <label for="feedback">Feedback:</label>
+                <textarea id="feedback" placeholder="உங்கள் கருத்துக்களை எழுதவும்..." required></textarea>
+            </div>
+
+            <!-- Submit Button -->
+            <button type="submit">Submit Feedback</button>
+        </form>
+    </div>
+
+    <!-- JavaScript -->
+    <script>
+        function submitFeedback() {
+            alert("Feedback submitted successfully!");
+            document.getElementById("feedbackForm").reset();
+        }
+    </script>
+
+</body>
+</html>
